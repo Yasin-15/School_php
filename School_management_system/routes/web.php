@@ -16,6 +16,8 @@ use App\Http\Controllers\Admin\NoticeController;
 use App\Http\Controllers\Admin\AssignmentController;
 use App\Http\Controllers\Teacher\DashboardController as TeacherDashboardController;
 use App\Http\Controllers\Student\DashboardController as StudentDashboardController;
+use App\Http\Controllers\Parent\DashboardController as ParentDashboard;
+use App\Http\Controllers\Parent\DashboardController as ParentDashboardController;
 
 // Public routes
 Route::get('/', function () {
@@ -67,6 +69,11 @@ Route::middleware(['auth'])->group(function () {
         
         // Fee management
         Route::resource('fees', FeeController::class);
+        Route::post('fees/{fee}/mark-paid', [FeeController::class, 'markAsPaid'])->name('fees.mark-paid');
+        Route::get('fees-bulk-create', [FeeController::class, 'bulkCreate'])->name('fees.bulk-create');
+        Route::post('fees-bulk-store', [FeeController::class, 'bulkStore'])->name('fees.bulk-store');
+        Route::get('fees-revenue', [FeeController::class, 'revenue'])->name('fees.revenue');
+        Route::post('fees-update-overdue', [FeeController::class, 'updateOverdue'])->name('fees.update-overdue');
         
         // Attendance management
         Route::resource('attendance', AttendanceController::class)->except(['show', 'edit', 'update']);
@@ -104,8 +111,6 @@ Route::middleware(['auth'])->group(function () {
 
     // Parent routes
     Route::middleware(['role:parent'])->prefix('parent')->name('parent.')->group(function () {
-        Route::get('/dashboard', function () {
-            return view('parent.dashboard');
-        })->name('dashboard');
+        Route::get('/dashboard', [ParentDashboard::class, 'index'])->name('dashboard');
     });
 });

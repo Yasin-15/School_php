@@ -12,7 +12,7 @@ class AssignmentController extends Controller
 {
     public function index()
     {
-        $assignments = Assignment::with(['subject.schoolClass', 'createdBy'])->paginate(15);
+        $assignments = Assignment::with(['subject.schoolClass', 'teacher.user'])->paginate(15);
         return view('admin.assignments.index', compact('assignments'));
     }
 
@@ -33,14 +33,17 @@ class AssignmentController extends Controller
             'instructions' => 'nullable|string',
         ]);
 
+        $subject = Subject::find($request->subject_id);
+        
         Assignment::create([
             'title' => $request->title,
             'description' => $request->description,
             'subject_id' => $request->subject_id,
+            'teacher_id' => auth()->user()->isTeacher() ? auth()->user()->teacher->id : $subject->teachers->first()->id,
+            'school_class_id' => $subject->school_class_id,
             'due_date' => $request->due_date,
             'total_marks' => $request->total_marks,
             'instructions' => $request->instructions,
-            'created_by' => auth()->id(),
         ]);
 
         return redirect()->route('admin.assignments.index')
@@ -49,7 +52,7 @@ class AssignmentController extends Controller
 
     public function show(Assignment $assignment)
     {
-        $assignment->load(['subject.schoolClass', 'createdBy']);
+        $assignment->load(['subject.schoolClass', 'teacher.user']);
         return view('admin.assignments.show', compact('assignment'));
     }
 

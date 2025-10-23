@@ -123,7 +123,7 @@
                                         <p class="text-sm text-gray-600">{{ $grade->exam->name }}</p>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-lg font-bold text-blue-600">{{ $grade->grade }}</p>
+                                        <p class="text-lg font-bold text-blue-600">{{ $grade->grade_letter }}</p>
                                         <p class="text-sm text-gray-500">{{ $grade->marks_obtained }}/{{ $grade->exam->total_marks }}</p>
                                     </div>
                                 </div>

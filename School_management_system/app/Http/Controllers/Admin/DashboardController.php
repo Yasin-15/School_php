@@ -21,6 +21,8 @@ class DashboardController extends Controller
             'pending_fees' => Fee::where('status', 'pending')->sum('amount'),
             'overdue_fees' => Fee::where('status', 'overdue')->sum('amount'),
             'today_attendance' => Attendance::whereDate('date', today())->count(),
+            'total_revenue' => Fee::where('status', 'paid')->sum('amount'),
+            'teacher_expenses' => Teacher::where('is_active', true)->sum('salary'),
         ];
 
         $recent_students = Student::with(['user', 'schoolClass'])

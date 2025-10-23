@@ -63,7 +63,8 @@ class GradeController extends Controller
                 ],
                 [
                     'marks_obtained' => $gradeData['marks_obtained'],
-                    'grade' => $this->calculateGrade($gradeData['marks_obtained'], $exam->total_marks),
+                    'grade_letter' => $this->calculateGrade($gradeData['marks_obtained'], $exam->total_marks),
+                    'grade_points' => $this->calculateGradePoints($gradeData['marks_obtained'], $exam->total_marks),
                     'remarks' => $gradeData['remarks'] ?? null,
                 ]
             );
@@ -127,7 +128,8 @@ class GradeController extends Controller
 
         $grade->update([
             'marks_obtained' => $request->marks_obtained,
-            'grade' => $this->calculateGrade($request->marks_obtained, $exam->total_marks),
+            'grade_letter' => $this->calculateGrade($request->marks_obtained, $exam->total_marks),
+            'grade_points' => $this->calculateGradePoints($request->marks_obtained, $exam->total_marks),
             'remarks' => $request->remarks,
         ]);
 
@@ -155,5 +157,19 @@ class GradeController extends Controller
         if ($percentage >= 40) return 'C';
         if ($percentage >= 33) return 'D';
         return 'F';
+    }
+
+    private function calculateGradePoints($marksObtained, $totalMarks)
+    {
+        $percentage = ($marksObtained / $totalMarks) * 100;
+
+        if ($percentage >= 90) return 4.0;
+        if ($percentage >= 80) return 3.7;
+        if ($percentage >= 70) return 3.3;
+        if ($percentage >= 60) return 3.0;
+        if ($percentage >= 50) return 2.7;
+        if ($percentage >= 40) return 2.0;
+        if ($percentage >= 33) return 1.0;
+        return 0.0;
     }
 }
